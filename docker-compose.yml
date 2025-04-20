@@ -75,6 +75,14 @@ services:
       - APPLICATIONINSIGHTS_DISABLE_TELEMETRY=false
       - APPLICATIONINSIGHTS_ENABLE_LOCAL_FORWARDING=true
       - APPLICATIONINSIGHTS_DISABLE_INTERNET_ACCESS=true
+      # Add these new environment variables to force local routing
+      - ApplicationInsights__ConnectionString=InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=http://appinsights-mock:8080/;LiveEndpoint=http://appinsights-mock:8080/
+      - APPLICATIONINSIGHTS_TOEVENTSJSON=true
+      - WEBSITE_HOSTNAME=localhost
+      - AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+    depends_on:
+      - appinsights-mock
+      - azurite
 
   # Application Insights Mock Service
   appinsights-mock:
@@ -87,7 +95,18 @@ services:
     networks:
       - azure-network
     command: >
-      sh -c "echo 'server { listen 8080; location / { return 200 \"OK\"; } }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+      sh -c "mkdir -p /var/log/nginx && echo 'server { 
+        listen 8080; 
+        access_log /var/log/nginx/appinsights.log;
+        location / { 
+          add_header Content-Type application/json;
+          return 200 \"{\\\"itemsReceived\\\":1,\\\"itemsAccepted\\\":1,\\\"errors\\\":[]}\"; 
+        }
+        location /v2/track { 
+          add_header Content-Type application/json;
+          return 200 \"{\\\"itemsReceived\\\":1,\\\"itemsAccepted\\\":1,\\\"errors\\\":[]}\"; 
+        }
+      }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 
 networks:
   azure-network:
