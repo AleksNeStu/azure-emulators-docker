@@ -36,14 +36,16 @@ Configure Poetry to create the virtual environment in your project directory usi
 # Configure Poetry to create virtual environments in the project directory
 poetry config virtualenvs.in-project true
 
-# Specify Python 3.8 for the virtual environment
-poetry env use python3.8
+# Specify Python 3.12 for the virtual environment
+poetry env use python3.12
 
 # Install dependencies (without the root package)
 poetry install --no-root
 
 # Activate the virtual environment (for Poetry 2.0.0+)
 poetry env activate
+# or
+source .venv/bin/activate
 ```
 
 ### Quick Start

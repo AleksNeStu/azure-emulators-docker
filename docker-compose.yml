@@ -68,10 +68,13 @@ services:
     networks:
       - azure-network
     environment:
-      - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=http://appinsights-mock:8080/
+      - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=http://appinsights-mock:8080/;LiveEndpoint=http://appinsights-mock:8080/
       - APPINSIGHTS_INSTRUMENTATIONKEY=00000000-0000-0000-0000-000000000000
       - APPLICATIONINSIGHTS_DISABLE_EXTENDED_METRIC=true
       - APPINSIGHTS_ENDPOINTURL=http://appinsights-mock:8080/
+      - APPLICATIONINSIGHTS_DISABLE_TELEMETRY=false
+      - APPLICATIONINSIGHTS_ENABLE_LOCAL_FORWARDING=true
+      - APPLICATIONINSIGHTS_DISABLE_INTERNET_ACCESS=true
 
   # Application Insights Mock Service
   appinsights-mock:
