@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+
+  # Azure Cosmos DB Emulator (MongoDB API mode)
+  cosmosdb:
+    container_name: cosmosdb-emulator
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    mem_limit: 3g
+    cpu_count: 2
+    environment:
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.0.1
+    ports:
+      - "8081:8081"      # Emulator portal
+      - "10250-10255:10250-10255" # MongoDB API
+      - "443:443"        # HTTPS access
+    volumes:
+      - cosmosdb_data:/cosmos/data
+      - cosmosdb_cert:/cosmos/cert
+    networks:
+      - azure-network
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    tty: true
+    stdin_open: true
+
+  # Azurite (Azure Blob Storage Emulator)
+  azurite:
+    container_name: azurite
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose"
+    ports:
+      - "10000:10000"  # Blob service
+      - "10001:10001"  # Queue service
+      - "10002:10002"  # Table service
+    volumes:
+      - azurite_data:/data
+    networks:
+      - azure-network
+
+  # Azure Service Bus Emulator
+  servicebus:
+    container_name: servicebus-emulator
+    image: mcr.microsoft.com/azure-service-bus/emulator:latest
+    ports:
+      - "5672:5672"  # AMQP port
+      - "9354:9354"  # Management port
+    networks:
+      - azure-network
+
+  # Azure Functions Core Tools Emulator
+  azurefunctions:
+    container_name: azure-functions-emulator
+    image: mcr.microsoft.com/azure-functions/dotnet:4
+    ports:
+      - "7071:7071"  # Functions runtime port
+    volumes:
+      - ./functions:/home/site/wwwroot
+    networks:
+      - azure-network
+
+networks:
+  azure-network:
+    driver: bridge
+
+volumes:
+  cosmosdb_data:
+  cosmosdb_cert:
+  azurite_data:
