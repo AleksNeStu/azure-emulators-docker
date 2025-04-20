@@ -107,4 +107,6 @@ node_modules/
 # Project specific
 dev/
 tmp/
-
+volumes/
+.vscode/
+functions/
