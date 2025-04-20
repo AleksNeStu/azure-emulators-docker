@@ -7,6 +7,10 @@ services:
     container_name: cosmosdb-emulator
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
     mem_limit: 3g
+    deploy:
+      resources:
+        limits:
+          memory: 3g
     cpu_count: 2
     environment:
       - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
@@ -17,7 +21,7 @@ services:
       - "10250-10255:10250-10255" # MongoDB API
       - "443:443"        # HTTPS access
     volumes:
-      - cosmosdb_data:/cosmos/data
+      - ./volumes/cosmos_db:/cosmos/data
       - cosmosdb_cert:/cosmos/cert
     networks:
       - azure-network
@@ -30,7 +34,7 @@ services:
 
   # Azurite (Azure Blob Storage Emulator)
   azurite:
-    container_name: azurite
+    container_name: azurite-emulator
     image: mcr.microsoft.com/azure-storage/azurite
     command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose"
     ports:
@@ -38,7 +42,7 @@ services:
       - "10001:10001"  # Queue service
       - "10002:10002"  # Table service
     volumes:
-      - azurite_data:/data
+      - ./volumes/blob:/data
     networks:
       - azure-network
 
@@ -49,6 +53,8 @@ services:
     ports:
       - "5672:5672"  # AMQP port
       - "9354:9354"  # Management port
+    volumes:
+      - ./volumes/servicebus:/var/opt/servicebus
     networks:
       - azure-network
 
@@ -60,6 +66,7 @@ services:
       - "7071:7071"  # Functions runtime port
     volumes:
       - ./functions:/home/site/wwwroot
+      - ./volumes/functions:/home/LogFiles
     networks:
       - azure-network
 
@@ -68,6 +75,4 @@ networks:
     driver: bridge
 
 volumes:
-  cosmosdb_data:
   cosmosdb_cert:
-  azurite_data:
