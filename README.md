@@ -25,6 +25,26 @@ This project provides a complete local development environment for Azure service
 
 - [Docker](https://www.docker.com/get-started) and Docker Compose
 - At least 4GB of available RAM (Cosmos DB Emulator requires 3GB)
+- Python 3.8+ for running tests
+- [Poetry](https://python-poetry.org/docs/#installation) (version 2.0.0+) for dependency management
+
+### Poetry Configuration
+
+Configure Poetry to create the virtual environment in your project directory using Python 3.8:
+
+```bash
+# Configure Poetry to create virtual environments in the project directory
+poetry config virtualenvs.in-project true
+
+# Specify Python 3.8 for the virtual environment
+poetry env use python3.8
+
+# Install dependencies (without the root package)
+poetry install --no-root
+
+# Activate the virtual environment (for Poetry 2.0.0+)
+poetry env activate
+```
 
 ### Quick Start
 
@@ -33,11 +53,21 @@ This project provides a complete local development environment for Azure service
 git clone https://github.com/yourusername/azure-emulators-docker.git
 cd azure-emulators-docker
 
-# Start all services
+# Start all services 
 docker-compose up -d
 
 # Start specific services only
 docker-compose up -d azurite servicebus
+```
+
+### Running Tests
+
+```bash
+# Run tests using Poetry
+poetry run pytest
+
+# Run specific tests
+poetry run pytest tests/test_emulators.py
 ```
 
 ## 🔌 Connection Information
