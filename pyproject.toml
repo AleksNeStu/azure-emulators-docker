@@ -6,11 +6,11 @@ authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.12"
 azure-cosmos = "^4.3.0"
 azure-storage-blob = "^12.13.0"
 azure-storage-queue = "^12.6.0"
-azure-data-tables = "^12.4.0"  # Replacement for azure-storage-table
+azure-data-tables = "^12.4.0"  # New tables API
 azure-servicebus = "^7.8.0"
 pytest = "^7.0.0"
 
