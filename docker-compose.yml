@@ -1,28 +1,32 @@
 services:
 
   # Azure Cosmos DB Emulator (MongoDB API mode)
-  cosmosdb:
-    container_name: cosmosdb-emulator
+  # https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator?tabs=docker-linux%2Ccsharp&pivots=api-mongodb
+  cosmosdb-mongo:
+    container_name: linux-emulator
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
-    mem_limit: 3g
+    mem_limit: 2g
     deploy:
       resources:
         limits:
-          memory: 3g
+          memory: 2g
     cpu_count: 2
     environment:
-      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=5
       - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      - AZURE_COSMOS_EMULATOR_ENABLE_MONGODB_ENDPOINT=4.0
       - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.0.1
+      - AZURE_COSMOS_EMULATOR_ACCEPT_EULA=Y
+      # Add this to reset evaluation period
+      - AZURE_COSMOS_EMULATOR_RESET_EVAL_DATE=1
     ports:
+      # https://localhost:8081/_explorer/index.html
       - "8081:8081"      # Emulator portal
-      - "10250-10255:10250-10255" # MongoDB API
-      - "443:443"        # HTTPS access
+      - "10250-10255:10250-10255"  # API ports range
     volumes:
       - ./volumes/cosmosdb/data:/cosmos/data
-      - cosmosdb_cert:/cosmos/cert
     networks:
-      - azure-network
+      - azure-emulators-network
     cap_add:
       - SYS_ADMIN
     security_opt:
@@ -31,9 +35,10 @@ services:
     stdin_open: true
 
   # Azurite (Azure Blob Storage Emulator)
+  # https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=docker-hub%2Cblob-storage
   azurite:
     container_name: azurite-emulator
-    image: mcr.microsoft.com/azure-storage/azurite
+    image: mcr.microsoft.com/azure-storage/azurite:latest
     ports:
       - "10000:10000"  # Blob service
       - "10001:10001"  # Queue service
@@ -41,7 +46,7 @@ services:
     volumes:
       - ./volumes/azurite:/data
     networks:
-      - azure-network
+      - azure-emulators-network
 
   # Azure Service Bus Emulator
   servicebus:
@@ -53,7 +58,7 @@ services:
     volumes:
       - ./volumes/servicebus:/var/opt/servicebus
     networks:
-      - azure-network
+      - azure-emulators-network
 
   # Azure Functions Core Tools Emulator
   azurefunctions:
@@ -65,7 +70,7 @@ services:
       - ./functions:/home/site/wwwroot
       - ./volumes/functions:/home/LogFiles
     networks:
-      - azure-network
+      - azure-emulators-network
     environment:
       - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=http://appinsights-mock:8080/;LiveEndpoint=http://appinsights-mock:8080/
       - APPINSIGHTS_INSTRUMENTATIONKEY=00000000-0000-0000-0000-000000000000
@@ -92,7 +97,7 @@ services:
     volumes:
       - ./volumes/appinsights-mock:/usr/share/nginx/html
     networks:
-      - azure-network
+      - azure-emulators-network
     command: >
       sh -c "mkdir -p /var/log/nginx && echo 'server { 
         listen 8080; 
@@ -108,8 +113,6 @@ services:
       }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 
 networks:
-  azure-network:
+  azure-emulators-network:
+    name: azure-emulators-network
     driver: bridge
-
-volumes:
-  cosmosdb_cert:
