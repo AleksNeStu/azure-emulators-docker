@@ -4,7 +4,7 @@
 ![Docker Compose](https://img.shields.io/badge/Docker_Compose-v3.8-brightgreen)
 ![Last Updated](https://img.shields.io/badge/Last_Updated-April_2025-lightgrey)
 
-> 🚀 A complete Docker-based local environment for Azure development, including Cosmos DB Emulator (MongoDB API), Azurite (Blob/Queue/Table), and Azure Functions Runtime.
+> 🚀 A complete Docker-based local environment for Azure development, including Cosmos DB Emulator (with multiple APIs: SQL, MongoDB, Cassandra, Gremlin, Table), Azurite (Blob/Queue/Table), and Azure Functions Runtime.
 
 ## 📋 Overview
 
@@ -12,12 +12,12 @@ This project provides a complete local development environment for Azure service
 
 ### Services Included
 
-| Service | Description | Port(s) |
-|---------|-------------|---------|
-| **Azure Cosmos DB Emulator** | Emulates Azure Cosmos DB with MongoDB API support | 8081, 10255 |
-| **Azurite** | Emulates Azure Storage (Blob, Queue, Table) | 10000-10002 |
-| **Azure Service Bus Emulator** | Local emulator for Azure Service Bus messaging | 9354, 5672 |
-| **Azure Functions Core Tools** | Local environment for Azure Functions | 7071 |
+| Service | Description | Port(s) | Status |
+|---------|-------------|---------|--------|
+| **Azure Cosmos DB Emulator** | Emulates Cosmos DB with multiple APIs (SQL, MongoDB, Cassandra, Gremlin, Table) | 8081, 10255 | ✅ Tested (MongoDB) |
+| **Azurite** | Emulates Azure Storage (Blob, Queue, Table) | 10000-10002 | ✅ Tested |
+| **Azure Service Bus Emulator** | Local emulator for Azure Service Bus messaging | 9354, 5672 | 🔄 To be tested |
+| **Azure Functions Core Tools** | Local environment for Azure Functions | 7071 | 🔄 To be tested |
 
 ## 🚀 Getting Started
 
