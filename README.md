@@ -107,6 +107,24 @@ TableEndpoint=http://localhost:10002/devstoreaccount1;
 - **URL:** http://localhost:7071
 - **Functions Root:** `./functions`
 
+## Windows Native Installation Alternative
+
+While Docker provides a cross-platform solution, Windows users can alternatively install and run the Azure Cosmos DB Emulator directly on their machines for potentially better performance.
+
+### Installing the Windows Cosmos DB Emulator
+
+1. Download the installer from the [official Microsoft page](https://aka.ms/cosmosdb-emulator)
+2. Run the installer and follow the prompts
+3. The emulator will be installed to `C:\Program Files\Azure Cosmos DB Emulator\`
+
+### Running with MongoDB Support
+
+Launch the emulator with MongoDB API support using these command-line arguments:
+
+```cmd
+"C:\Program Files\Azure Cosmos DB Emulator\CosmosDB.Emulator.exe" /AllowNetworkAccess /Key=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw== /EnableMongoDbEndpoint=4.0
+```
+
 ## 📝 Configuration
 
 ### Docker Compose Options
