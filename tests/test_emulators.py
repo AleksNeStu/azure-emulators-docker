@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from azure.cosmos import CosmosClient, PartitionKey
 from azure.storage.blob import BlobServiceClient
 from azure.storage.queue import QueueServiceClient
-from azure.storage.table import TableServiceClient
+from azure.data.tables import TableServiceClient
 from azure.servicebus import ServiceBusClient, ServiceBusMessage
 
 
@@ -231,18 +231,3 @@ class TestServiceBusEmulator:
         finally:
             sender.close()
             receiver.close()
-
-
-if __name__ == "__main__":
-    # Create a README.md with test execution instructions
-    readme_content = """
-# Azure Emulator Tests
-
-This directory contains tests for verifying the functionality of the Azure emulators in your local Docker environment.
-
-## Prerequisites
-
-Install the required Python packages:
-
-```bash
-pip install -r requirements.txt

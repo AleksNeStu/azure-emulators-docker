@@ -19,7 +19,7 @@ services:
       - "10250-10255:10250-10255" # MongoDB API
       - "443:443"        # HTTPS access
     volumes:
-      - ./volumes/cosmos_db:/cosmos/data
+      - ./volumes/cosmosdb/data:/cosmos/data
       - cosmosdb_cert:/cosmos/cert
     networks:
       - azure-network
@@ -34,13 +34,12 @@ services:
   azurite:
     container_name: azurite-emulator
     image: mcr.microsoft.com/azure-storage/azurite
-    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose"
     ports:
       - "10000:10000"  # Blob service
       - "10001:10001"  # Queue service
       - "10002:10002"  # Table service
     volumes:
-      - ./volumes/blob:/data
+      - ./volumes/azurite:/data
     networks:
       - azure-network
 
