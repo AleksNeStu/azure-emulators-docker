@@ -15,16 +15,20 @@ services:
       - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=5
       - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
       - AZURE_COSMOS_EMULATOR_ENABLE_MONGODB_ENDPOINT=4.0
-      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=127.0.0.1
+      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=0.0.0.0
       - AZURE_COSMOS_EMULATOR_ACCEPT_EULA=Y
       # Add this to reset evaluation period
       - AZURE_COSMOS_EMULATOR_RESET_EVAL_DATE=1
+      # Use consistent certificates for easier client connection
+      - AZURE_COSMOS_EMULATOR_GENERATE_FIXED_CERT=true
     ports:
       # https://localhost:8081/_explorer/index.html
       - "8081:8081"      # Emulator portal
       - "10250-10255:10250-10255"  # API ports range
+      - "443:443"        # HTTPS port for certificate negotiation
     volumes:
-      - ./volumes/cosmosdb/data:/cosmos/data
+      - ./volumes/cosmosdb-mongo/data:/cosmos/data
+      - ./volumes/cosmosdb-mongo/certs:/certs
     networks:
       - azure-emulators-network
     cap_add:
@@ -33,6 +37,12 @@ services:
       - seccomp:unconfined
     tty: true
     stdin_open: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl --insecure https://localhost:8081/_explorer/emulator.pem -o /cosmos/data/emulatorcert.crt && echo 'Certificate exported' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
 
   # Azurite (Azure Blob Storage Emulator)
   # https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=docker-hub%2Cblob-storage
