@@ -46,23 +46,28 @@ class TestCosmosDBEmulatorMongo:
             connection_string = "mongodb://localhost:C2y6yDjf5%2FR%2Bob0N8A7Cgv30VRDJIWEHLM%2B4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw%2FJw%3D%3D@localhost:10255/admin?ssl=true"
             
             # Connection options with certificate
+            # conn_options = {
+            #     "ssl": True,
+            #     "tls": True,
+            #     "tlsAllowInvalidCertificates": True,  # Essential for self-signed certs
+            #     "serverSelectionTimeoutMS": 30000,    # Longer timeout for initial connection
+            #     "socketTimeoutMS": 30000,
+            #     "connectTimeoutMS": 30000,
+            #     "retryWrites": False,
+            #     "directConnection": True,
+            # }
             conn_options = {
-                "ssl": True,
-                "tls": True,
                 "tlsAllowInvalidCertificates": True,  # Essential for self-signed certs
-                "serverSelectionTimeoutMS": 30000,    # Longer timeout for initial connection
-                "socketTimeoutMS": 30000,
-                "connectTimeoutMS": 30000,
                 "retryWrites": False,
                 "directConnection": True,
             }
             
             # Try to use the certificate file if it exists
-            if os.path.exists(cert_path):
-                conn_options["tlsCAFile"] = cert_path
-                print(f"Using certificate file for TLS: {cert_path}")
-            
-            print(f"Connecting to MongoDB with options: {conn_options}")
+            # if os.path.exists(cert_path):
+            #     conn_options["tlsCAFile"] = cert_path
+            #     print(f"Using certificate file for TLS: {cert_path}")
+            #
+            # print(f"Connecting to MongoDB with options: {conn_options}")
             
             # Connect to MongoDB API
             self.mongo_client = pymongo.MongoClient(connection_string, **conn_options)
